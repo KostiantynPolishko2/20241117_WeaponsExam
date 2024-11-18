@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AdminPageServer.PL.Migrations
 {
-    [DbContext(typeof(WeaponsCardsContext))]
+    [DbContext(typeof(WeaponsItemsContext))]
     partial class WeaponsCardsContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

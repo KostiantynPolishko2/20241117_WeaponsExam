@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AdminPageServer.PL.Migrations
 {
-    [DbContext(typeof(WeaponsCardsContext))]
+    [DbContext(typeof(WeaponsItemsContext))]
     [Migration("20241118170133_weapons_cards_02")]
     partial class weapons_cards_02
     {

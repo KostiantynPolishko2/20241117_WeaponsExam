@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdminPageServer.PL.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [EnableCors("AllowAll")]
     [ApiController]
     [Route("[controller]")]

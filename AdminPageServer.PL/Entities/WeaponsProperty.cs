@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
+﻿using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace AdminPageServer.PL.Entities
@@ -10,14 +11,14 @@ namespace AdminPageServer.PL.Entities
         public int id { get; set; }
         public float price { get; set; }
         public float weight { get; set; }
-
+        [JsonIgnore]
         public string vendor = null!;
         public string Vendor
         {
             get => vendor;
             set => vendor = value.ToLower();
         }
-
+        [JsonIgnore]
         public string description = null!;
         public string Description
         {

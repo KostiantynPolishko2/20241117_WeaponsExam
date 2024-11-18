@@ -1,9 +1,12 @@
 ﻿using AdminPageServer.PL.Entities;
+using Newtonsoft.Json;
+
 
 namespace AdminPageServer.PL.DTO
 {
     public class WeaponsCardDto
     {
+        [JsonIgnore]
         public string model = null!;
         public string Model
         {
@@ -13,8 +16,9 @@ namespace AdminPageServer.PL.DTO
                     return "None";
                 return model.ToUpper();
             }
+            set => model = value;
         }
-
+        [JsonIgnore]
         public string name = null!;
         public string Name
         {
@@ -24,6 +28,7 @@ namespace AdminPageServer.PL.DTO
                     return "None";
                 return name.Replace(name[0], name.ToUpper()[0]);
             }
+            set => name = value;
         }
 
         public bool isVisible {  get; set; }

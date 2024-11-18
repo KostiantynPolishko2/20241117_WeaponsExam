@@ -3,13 +3,13 @@ using AdminPageServer.PL.Entities;
 
 namespace AdminPageServer.PL.EF
 {
-    public class WeaponsCardsContext : DbContext
+    public class WeaponsItemsContext : DbContext
     {
         public DbSet<WeaponsItem> weaponsItems { get; set; } = null!;
         public DbSet<WeaponsProperty> weaponsProperties { get; set; } = null!;
         public DbSet<WeaponsImage> weaponsImages { get; set; } = null!;
 
-        public WeaponsCardsContext(DbContextOptions<WeaponsCardsContext> options) : base(options) { }
+        public WeaponsItemsContext(DbContextOptions<WeaponsItemsContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
