@@ -9,6 +9,13 @@ namespace AdminPageServer.PL.Entities
         [SwaggerIgnore]
         public int id { get; set; }
 
+        public string model = null!;
+        public string Model
+        {
+            get => model;
+            set => model = value.ToLower();
+        }
+
         public string name = null!;
         public string Name
         {

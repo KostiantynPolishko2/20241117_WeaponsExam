@@ -18,6 +18,13 @@ namespace AdminPageServer.PL.Entities
             set => vendor = value.ToLower();
         }
 
+        public string description = null!;
+        public string Description
+        {
+            get => description;
+            set => description = value.ToLower();
+        }
+
         [SwaggerIgnore]
         public int idWeaponsItem { get; set; }
         [SwaggerIgnore]
