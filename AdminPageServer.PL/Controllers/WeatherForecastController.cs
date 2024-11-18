@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminPageServer.PL.Controllers
 {
+    [Authorize]
+    [EnableCors("AllowAll")]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
