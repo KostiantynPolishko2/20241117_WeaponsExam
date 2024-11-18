@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AdminPageServer.PL;
+using AdminPageServer.PL.EF;
+using Microsoft.EntityFrameworkCore;
 
 //Server SpaceObjects
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.AddDbContext<SpaceObjectContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("LocalSqlDb_SpaceObject")));
+builder.Services.AddDbContext<WeaponsCardsContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("LocalSqlDb")));
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllers(options =>
