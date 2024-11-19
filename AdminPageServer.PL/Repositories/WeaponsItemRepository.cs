@@ -12,6 +12,7 @@ namespace AdminPageServer.PL.Repositories
     public class WeaponsItemRepository: IWeaponsItemRepository
     {
         private readonly WeaponsItemsContext context;
+        private bool disposed = false;
 
         public WeaponsItemRepository(WeaponsItemsContext context)
         {
@@ -52,6 +53,29 @@ namespace AdminPageServer.PL.Repositories
             };
 
             return weaponsCardDto;
+        }
+
+        public void Save()
+        {
+            context.SaveChanges();
+        }
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

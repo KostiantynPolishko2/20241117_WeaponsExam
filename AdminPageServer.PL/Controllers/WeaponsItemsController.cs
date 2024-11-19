@@ -32,12 +32,7 @@ namespace AdminPageServer.PL.Controllers
             }
             catch (Exception ex) 
             {
-                if (ex is WeaponsException weaponsEx)
-                {
-                    var _ex = (ex as WeaponsException);
-                    return NotFound($"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}");
-                }
-                return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
+                return BadRequest(getException(ex));
             }
         }
 
@@ -55,25 +50,18 @@ namespace AdminPageServer.PL.Controllers
             }
             catch (Exception ex)
             {
-                //if (ex is WeaponsException weaponsEx)
-                //{
-                //    var _ex = (ex as WeaponsException);
-                //    return NotFound($"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}");
-                //}
-                //return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
-
-                return getException(ex);
+                return BadRequest(getException(ex));
             }
         }
 
-        private ActionResult<WeaponsCardDto> getException(Exception ex)
+        private string getException(Exception ex)
         {
             if (ex is WeaponsException weaponsEx)
             {
                 var _ex = (ex as WeaponsException);
-                return NotFound($"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}");
+                return $"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}";
             }
-            return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
+            return $"Error! msg: {ex.Message}, details: {ex.InnerException}";
         }
     }
 }
