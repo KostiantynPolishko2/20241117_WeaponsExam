@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using AdminPageServer.PL.DTO;
 using AdminPageServer.PL.Infrastructures;
 using AdminPageServer.PL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AdminPageServer.PL.Controllers
 {
     [EnableCors("AllowAll")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WeaponsItemsController : ControllerBase
@@ -23,7 +25,7 @@ namespace AdminPageServer.PL.Controllers
             this.weapons = weapons;
         }
 
-        [HttpGet("weaponsitems", Name = "GetWeaponsItemsDto")]
+        [HttpGet("models", Name = "GetWeaponsItemsDto")]
         public ActionResult<IEnumerable<WeaponsItemDto>> GetWeaponsItemsDto() 
         {
             try
@@ -36,7 +38,7 @@ namespace AdminPageServer.PL.Controllers
             }
         }
 
-        [HttpGet("weapons-id/{model}", Name = "GetWeaponsCardDtoById")]
+        [HttpGet("model/{model}", Name = "GetWeaponsCardDtoById")]
         public ActionResult<WeaponsCardDto> GetWeaponsCardDtoById([FromRoute] string? model)
         {         
             try

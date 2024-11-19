@@ -12,7 +12,7 @@ using AdminPageServer.PL.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<WeaponsItemsContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("LocalSqlDb")));
+builder.Services.AddDbContext<WeaponsItemsContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("AzureSqlDb")));
 builder.Services.AddScoped<IWeaponsItemRepository, WeaponsItemRepository>();
 
 // Add services to the controller
