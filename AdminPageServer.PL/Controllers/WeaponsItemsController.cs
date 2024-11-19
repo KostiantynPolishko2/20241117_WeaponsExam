@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using AdminPageServer.PL.DTO;
-using AdminPageServer.PL.EF;
-using AdminPageServer.PL.Entities;
-using System.ComponentModel.DataAnnotations;
+using AdminPageServer.PL.Infrastructures;
+using AdminPageServer.PL.Interfaces;
 
-namespace SpaceObject.Controllers
+namespace AdminPageServer.PL.Controllers
 {
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
@@ -16,12 +14,13 @@ namespace SpaceObject.Controllers
     public class WeaponsItemsController : ControllerBase
     {
         private readonly ILogger<WeaponsItemsController> logger;
-        private readonly WeaponsItemsContext context;
+        private readonly IWeaponsItemRepository weapons;
 
-        public WeaponsItemsController(ILogger<WeaponsItemsController> logger, WeaponsItemsContext context)
+
+        public WeaponsItemsController(ILogger<WeaponsItemsController> logger, IWeaponsItemRepository weapons)
         {
             this.logger = logger;
-            this.context = context;
+            this.weapons = weapons;
         }
 
         [HttpGet("weaponsitems", Name = "GetWeaponsItemsDto")]
@@ -29,47 +28,52 @@ namespace SpaceObject.Controllers
         {
             try
             {
-                var data = context.weaponsItems;
-                if (data == null)
-                {
-                    throw new Exception("WeaponsItems no records in db");
-                }
-
-                IMapper mapper = new MapperConfiguration(c => c.CreateMap<WeaponsItem, WeaponsItemDto>()).CreateMapper();
-                var weaponsItemsDto = mapper.Map<IEnumerable<WeaponsItem>, IEnumerable<WeaponsItemDto>>(data);
-
-                return Ok(weaponsItemsDto);
+                return Ok(weapons.getItemsDto());
             }
             catch (Exception ex) 
-            { 
-                return NotFound(ex.Message);
+            {
+                if (ex is WeaponsException weaponsEx)
+                {
+                    var _ex = (ex as WeaponsException);
+                    return NotFound($"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}");
+                }
+                return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
             }
         }
 
-        [HttpGet("weapons-id/{id}", Name = "GetWeaponsCardDto")]
-        public ActionResult<WeaponsCardDto> GetWeaponsCardDto([FromRoute] int id)
+        [HttpGet("weapons-id/{model}", Name = "GetWeaponsCardDtoById")]
+        public ActionResult<WeaponsCardDto> GetWeaponsCardDtoById([FromRoute] string? model)
         {         
             try
             {
-                var item = context.weaponsItems.Include(wi => wi.weaponsProperty).Include(wi => wi.weaponsImage).FirstOrDefault(c => c.id.Equals(id));
-
-                if (item == null)
+                if (string.IsNullOrWhiteSpace(model))
                 {
-                    throw new Exception($"WeaponsInfo of id {id}  no records in db");
+                    throw new ArgumentNullException($"no name of weapons");
                 }
 
-                var weaponsCardDto = new WeaponsCardDto(item.weaponsProperty) { 
-                    Model = item.Model, Name = item.Name, isVisible = item.isVisible,
-                    image_path = item.weaponsImage!.path
-                };
-
-                return Ok(weaponsCardDto);
+                return Ok(weapons.getCardDtoById(model));
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
-            }
+                //if (ex is WeaponsException weaponsEx)
+                //{
+                //    var _ex = (ex as WeaponsException);
+                //    return NotFound($"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}");
+                //}
+                //return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
 
+                return getException(ex);
+            }
+        }
+
+        private ActionResult<WeaponsCardDto> getException(Exception ex)
+        {
+            if (ex is WeaponsException weaponsEx)
+            {
+                var _ex = (ex as WeaponsException);
+                return NotFound($"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}");
+            }
+            return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
         }
     }
 }

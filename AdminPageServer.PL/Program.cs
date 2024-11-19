@@ -5,13 +5,17 @@ using System.Text;
 using AdminPageServer.PL;
 using AdminPageServer.PL.EF;
 using Microsoft.EntityFrameworkCore;
+using AdminPageServer.PL.Interfaces;
+using AdminPageServer.PL.Repositories;
 
 //Server SpaceObjects
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<WeaponsItemsContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("LocalSqlDb")));
+builder.Services.AddScoped<IWeaponsItemRepository, WeaponsItemRepository>();
 
+// Add services to the controller
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllers(options =>
 {
