@@ -55,6 +55,43 @@ namespace AdminPageServer.PL.Repositories
             return weaponsCardDto;
         }
 
+        public void addNewWeaponsData(string model, WeaponsDataDto weaponsData)
+        {
+            var check = context.weaponsItems.FirstOrDefault(wi => wi.Model.Equals(model.ToLower()))??null;
+            if (check != null)
+            {
+                throw new WeaponsException("in db is already existed", model);
+            }
+
+            context.weaponsItems.Add(new WeaponsItem(weaponsData.weaponsItem));
+            context.SaveChanges();
+
+            int idWeaponsItem = context.weaponsItems.FirstOrDefault(wi => wi.Model.Equals(model.ToLower()))!.id;
+            if (idWeaponsItem == -1)
+            {
+                throw new Exception($"Weapons {model} did not saved to db");
+            }
+
+            weaponsData.weaponsProperty.idWeaponsItem = idWeaponsItem;
+            weaponsData.weaponsImage.idWeaponsItem = idWeaponsItem;
+
+            context.weaponsProperties.Add(weaponsData.weaponsProperty);
+            context.weaponsImages.Add(weaponsData.weaponsImage);
+            context.SaveChanges();
+        }
+
+        public void deleteWeaponsData(string model)
+        {
+            var weaponsItem = context.weaponsItems.FirstOrDefault(wi => wi.Model.Equals(model.ToLower())) ?? null;
+            if (weaponsItem == null)
+            {
+                throw new WeaponsException("in db is absent", model);
+            }
+
+            context.weaponsItems.Remove(weaponsItem);
+            context.SaveChanges();
+        }
+
         public void Save()
         {
             context.SaveChanges();

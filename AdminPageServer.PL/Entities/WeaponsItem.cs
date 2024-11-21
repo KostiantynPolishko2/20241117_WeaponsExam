@@ -38,6 +38,16 @@ namespace AdminPageServer.PL.Entities
 
         [SwaggerIgnore]
         public WeaponsImage? weaponsImage { get; set; }
+
+        public WeaponsItem() { }
+
+        public WeaponsItem(WeaponsItem weaponsItem)
+        {
+            this.Model = weaponsItem.Model;
+            this.Name = weaponsItem.Name;
+            this.Type = weaponsItem.Type;
+            this.isVisible = weaponsItem.isVisible;
+        }
     }
 }
     

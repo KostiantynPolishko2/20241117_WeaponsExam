@@ -56,6 +56,46 @@ namespace AdminPageServer.PL.Controllers
             }
         }
 
+        [HttpPost("new-model/{model}", Name = "PostNewWeaponsModel")]
+        public IActionResult PostNewWeaponsModel([FromRoute] string? model, [FromBody] WeaponsDataDto weaponsDataDto)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(model))
+                {
+                    throw new ArgumentNullException($"no name of weapons");
+                }
+
+                weapons.addNewWeaponsData(model, weaponsDataDto);
+
+                return Ok(201);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(getException(ex));
+            }
+        }
+
+        [HttpDelete("model/{model}", Name = "DeleteWeaponsModel")]
+        public IActionResult DeleteWeaponsModel([FromRoute] string? model)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(model))
+                {
+                    throw new ArgumentNullException($"no name of weapons");
+                }
+
+                weapons.deleteWeaponsData(model);
+
+                return Ok(201);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(getException(ex));
+            }
+        }
+
         private string getException(Exception ex)
         {
             if (ex is WeaponsException weaponsEx)

@@ -9,6 +9,10 @@ namespace AdminPageServer.PL.Interfaces
 
         public WeaponsCardDto getCardDtoById(string name);
 
+        public void addNewWeaponsData(string model, WeaponsDataDto weaponsData);
+
+        public void deleteWeaponsData(string model);
+
         public void Save();
     }
 }
