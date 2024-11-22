@@ -12,11 +12,13 @@ namespace ClientPageServer.PL.Controllers
     public class WeaponsCardsController : ControllerBase
     {
         private readonly ILogger<WeaponsCardsController> logger;
+        private readonly HttpRequestMessage httpRequestMsg;
         private CancellationTokenSource cts = null!;
         private readonly int timeRequest = 10;
 
-        public WeaponsCardsController(ILogger<WeaponsCardsController> logger)
+        public WeaponsCardsController(ILogger<WeaponsCardsController> logger, HttpRequestMessage httpRequestMsg)
         {
+            this.httpRequestMsg = httpRequestMsg;
             this.logger = logger;
             setToken();
         }
@@ -33,11 +35,7 @@ namespace ClientPageServer.PL.Controllers
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var uri = new Uri("https://adminpage-server.azurewebsites.net/api/WeaponsItems/client-models");
-                    HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
-                    httpRequest.Headers.Add("Accept", "application/json");
-
-                    HttpResponseMessage responseMessage = client.Send(httpRequest, this.cts.Token);
+                    HttpResponseMessage responseMessage = client.Send(httpRequestMsg, this.cts.Token);
 
                     if (responseMessage.StatusCode == HttpStatusCode.OK){
                         return Ok(await responseMessage.Content.ReadFromJsonAsync<List<WeaponsCardDto>>(this.cts.Token));
