@@ -1,9 +1,11 @@
 using ClientPageServer.PL;
+using ClientPageServer.PL.Handlers;
+using ClientPageServer.PL.Interfaces;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add service of HttpRequestMessage to the container.
 builder.Services.AddTransient<HttpRequestMessage>(serviceProvider =>
 {
     // get connection string to out server
@@ -54,13 +56,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<HandlerException>();
+
 app.UseRouting();
 
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
-
-//app.UseAuthorization();
 
 app.MapControllers();
 

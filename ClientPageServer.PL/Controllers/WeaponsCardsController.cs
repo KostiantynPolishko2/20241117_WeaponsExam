@@ -31,41 +31,19 @@ namespace ClientPageServer.PL.Controllers
         [HttpGet("weapons-cards", Name = "GetWeaponsCards")]
         public async Task<ActionResult<IEnumerable<WeaponsCardDto>>> GetWeaponsCards()
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    HttpResponseMessage responseMessage = client.Send(httpRequestMsg, this.cts.Token);
+                HttpResponseMessage responseMessage = client.Send(httpRequestMsg, this.cts.Token);
 
-                    if (responseMessage.StatusCode == HttpStatusCode.OK){
-                        return Ok(await responseMessage.Content.ReadFromJsonAsync<List<WeaponsCardDto>>(this.cts.Token));
-                    }
-                    else{
-                        throw new WeaponsException("Error! failed HttpClient.Send(), status code != ", $"{HttpStatusCode.OK}");
-                    }
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return Ok(await responseMessage.Content.ReadFromJsonAsync<List<WeaponsCardDto>>(this.cts.Token));
+                }
+                else
+                {
+                    throw new WeaponsException("Error! failed HttpClient.Send(), status code != 200", $"{HttpStatusCode.OK}");
                 }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(handleException(ex));
-            }
         }
-
-        private string handleException(Exception ex)
-        {
-            if (ex is WeaponsException weaponsEx){
-                var _ex = (ex as WeaponsException);
-                return $"Error! msg: {weaponsEx.Message} {weaponsEx.property}, source: {weaponsEx.Source}";
-            }
-            else if (ex is HttpRequestException){
-                return $"Error! request failed due network, DNS, or server sertificate";
-            }
-            else if (ex is TaskCanceledException){
-                return $"Error! request failed due to finish time request {this.timeRequest}";
-            }
-
-            return $"Error! msg: {ex.Message}, details: {ex.InnerException}";
-        }
-
     }
 }
