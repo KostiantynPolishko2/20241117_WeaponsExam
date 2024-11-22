@@ -92,6 +92,22 @@ namespace AdminPageServer.PL.Repositories
             context.SaveChanges();
         }
 
+        public IEnumerable<WeaponsCardDto> getCardsDto()
+        {
+            IEnumerable<WeaponsItem> data = context.weaponsItems.Include(wi => wi.weaponsProperty).Include(wi => wi.weaponsImage);
+            if (data == null)
+            {
+                throw new WeaponsException("no records in db ", "WeaponsItems");
+            }
+
+            var config = new MapperConfiguration(c => c.CreateMap<WeaponsItem, WeaponsCardDto>().ForMember("image_path", opt => opt.MapFrom(src => src.weaponsImage!.path)));
+            IMapper mapper = new Mapper(config);
+
+            var weaponsCardsDto = mapper.Map<IEnumerable<WeaponsItem>, IEnumerable<WeaponsCardDto>>(data);
+
+            return weaponsCardsDto;
+        }
+
         public void Save()
         {
             context.SaveChanges();

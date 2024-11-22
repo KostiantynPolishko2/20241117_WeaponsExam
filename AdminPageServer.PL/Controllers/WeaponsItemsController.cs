@@ -96,6 +96,20 @@ namespace AdminPageServer.PL.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("client-models", Name = "GetWeaponsCards")]
+        public ActionResult<IEnumerable<WeaponsCardDto>> GetWeaponsCards()
+        {
+            try
+            {
+                return Ok(weapons.getCardsDto());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(getException(ex));
+            }
+        }
+
         private string getException(Exception ex)
         {
             if (ex is WeaponsException weaponsEx)

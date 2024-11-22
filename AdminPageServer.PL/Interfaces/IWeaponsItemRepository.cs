@@ -13,6 +13,8 @@ namespace AdminPageServer.PL.Interfaces
 
         public void deleteWeaponsData(string model);
 
+        public IEnumerable<WeaponsCardDto> getCardsDto();
+
         public void Save();
     }
 }
