@@ -1,6 +1,5 @@
 using ClientPageServer.PL;
 using ClientPageServer.PL.Handlers;
-using ClientPageServer.PL.Interfaces;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
