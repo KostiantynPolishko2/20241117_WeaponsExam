@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using OpenAIServer.Infrastructures;
 using OpenAIServer.Interfaces;
@@ -6,6 +7,7 @@ using OpenAIServer.Interfaces;
 namespace OpenAIServer.Controllers
 {
     [EnableCors("AllowAll")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ImageAIController : ControllerBase
