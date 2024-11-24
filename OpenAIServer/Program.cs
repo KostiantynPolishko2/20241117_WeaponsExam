@@ -8,19 +8,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add OpenAIAPI as a service
-builder.Services.AddTransient<OpenAIClient>(serviceProvider =>
+// Fetch the API key at startup
+string? url = builder.Configuration["OpenAI:Data"];
+if (url == null)
 {
-    // Get the API key from configuration (appsettings.json or environment variable)
-    string? apiKey = "api-key";
-    if (string.IsNullOrEmpty(apiKey))
-    {
-        throw new InvalidOperationException("OpenAI API Key is not configurated");
-    }
+    throw new InvalidOperationException("Data for OpenAI API Key is missing");
+}
 
-    // Initialize and return the OpenAIAPI instance
-    return new OpenAIClient(apiKey);
-});
+HttpClient httpClient = new HttpClient();
+string? apiKey = await httpClient.GetStringAsync(url);
+if (string.IsNullOrEmpty(apiKey))
+{
+    throw new InvalidOperationException("OpenAI API Key is not configured");
+}
+
+// Register OpenAIClient with the fetched API key
+builder.Services.AddTransient<OpenAIClient>(_ => new OpenAIClient(apiKey));
 
 // Add services to the container.
 builder.Services.AddControllers();
