@@ -1,6 +1,7 @@
 using OpenAIServer.Interfaces;
 using OpenAIServer.Repositories;
 using OpenAI;
+using OpenAIServer.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,26 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Fetch the API key at startup
-string? url = builder.Configuration["OpenAI:Data"];
-if (url == null)
+// Fetch OpenAIClient via handler
+builder.Services.AddTransient<OpenAIClient>(serviceProvider =>
 {
-    throw new InvalidOperationException("Data for OpenAI API Key is missing");
-}
-
-HttpClient httpClient = new HttpClient();
-string? apiKey = await httpClient.GetStringAsync(url);
-if (string.IsNullOrEmpty(apiKey))
-{
-    throw new InvalidOperationException("OpenAI API Key is not configured");
-}
-
-// Register OpenAIClient with the fetched API key
-builder.Services.AddTransient<OpenAIClient>(_ => new OpenAIClient(apiKey));
+    return new HandlerOpenAIClient().CreateOpenAIClientAsync(builder.Configuration["OpenAI:Data"]).Result;
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddScoped<IAsteroidImageRepository, AsteroidImageRepository>();
+builder.Services.AddScoped<IImageAIRepository, ImageAIRepository>();
 
 
 //add CORS policy for permission treat request from other protocols and ports
@@ -52,6 +42,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenAiGeneration V1");
     });
 }
+
+app.UseMiddleware<HandlerException>();
 
 app.UseRouting();
 

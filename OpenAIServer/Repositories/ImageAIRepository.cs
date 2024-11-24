@@ -6,40 +6,29 @@ using System.ClientModel;
 
 namespace OpenAIServer.Repositories
 {
-    public class AsteroidImageRepository:IAsteroidImageRepository
+    public class ImageAIRepository : IImageAIRepository
     {
         private OpenAIClient openAIClient { get; set; }
         private CancellationTokenSource cts { get; set; }
         private readonly int timeSeconds = 25;
 
-        public AsteroidImageRepository(OpenAIClient openAIClient)
+        public ImageAIRepository(OpenAIClient openAIClient)
         { 
             this.openAIClient = openAIClient;
             cts = new CancellationTokenSource();
         }
 
-        public async Task<string> getUrl(string? name)
+        public async Task<string> getUrl(string requestAI)
         {
-            if (string.IsNullOrWhiteSpace(name) || name.Length < 3)
-            {
-                throw new ImageAiException("name is to short or ", "null");
-            }
-
             setTimeOfCts(this.timeSeconds);
 
-            try
-            {
-                ClientResult<GeneratedImage>? imageResponce = await openAIClient.GetImageClient("dall-e-3").GenerateImageAsync($"asteroid {name}", getImageOptions(), cts.Token);
+            ClientResult<GeneratedImage>? imageResponce = await openAIClient.GetImageClient("dall-e-3").GenerateImageAsync(requestAI, getImageOptions(), cts.Token);
 
-                if (imageResponce == null) 
-                    throw new ImageAiException("AI DALL-E-3 did not generate image asteroid", name);
+            if (imageResponce == null) 
+                throw new ImageAIException("AI DALL-E-3 did not generate image asteroid", requestAI);
 
-                return imageResponce.Value.ImageUri.OriginalString;
-            }
-            catch (OperationCanceledException) 
-            {
-                throw new ImageAiException("search time is end-of for ", name);
-            }
+            return imageResponce.Value.ImageUri.OriginalString;
+
         }
 
         private ImageGenerationOptions getImageOptions() => new ImageGenerationOptions()

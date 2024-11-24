@@ -8,33 +8,28 @@ namespace OpenAIServer.Controllers
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AsteroidImageController : ControllerBase
+    public class ImageAIController : ControllerBase
     {
-        private readonly ILogger<AsteroidImageController> logger;
-        private readonly IAsteroidImageRepository asteroidImageRepository;
+        private readonly ILogger<ImageAIController> logger;
+        private readonly IImageAIRepository imageAIRepository;
 
-        public AsteroidImageController(ILogger<AsteroidImageController> logger, IAsteroidImageRepository asteroidImageRepository)
+        public ImageAIController(ILogger<ImageAIController> logger, IImageAIRepository imageAIRepository)
         {
             this.logger = logger;
-            this.asteroidImageRepository = asteroidImageRepository;
+            this.imageAIRepository = imageAIRepository;
         }
 
-        [HttpGet("asteroid-image/{asteroidName}", Name = "GetAsteroidImageUrl")]
-        public async Task<ActionResult<string>> GetAsteroidImageUrl([FromRoute] string asteroidName)
+        [HttpGet("weapons-image/{weaponsModel}", Name = "GetWeaponsImageUrl")]
+        public async Task<ActionResult<string>> GetWeaponsImageUrl([FromRoute] string weaponsModel)
         {
-            string name = asteroidName.ToLower();
-            
-            try
+            string name = weaponsModel.ToLower();
+
+            if (string.IsNullOrWhiteSpace(name) || name.Length < 3)
             {
-                return await asteroidImageRepository.getUrl(asteroidName);
-                //return "https://docfiles.blob.core.windows.net/files/asteroid/asteroid.png";
+                throw new ImageAIException("name is to short or ", "null");
             }
-            catch (ImageAiException ex){
-                return NotFound($"Error! msg: {ex.Message} {ex.property}, source: {ex.Source}");
-            }
-            catch (Exception ex) {
-                return BadRequest($"Error! msg: {ex.Message}, details: {ex.InnerException}");
-            }
+
+            return await imageAIRepository.getUrl($"weapons {weaponsModel}");
         }
     }
 }
