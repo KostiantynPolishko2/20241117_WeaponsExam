@@ -32,6 +32,7 @@ namespace OpenAIServer.Controllers
             }
 
             return await imageAIRepository.getUrl($"weapons {weaponsModel}");
+            //return "https://weaponsimages.blob.core.windows.net/images-service/logo_ukraine-armed-forces.png";
         }
     }
 }
