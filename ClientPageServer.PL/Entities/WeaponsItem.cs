@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using NSwag.Annotations;
+//using NSwag.Annotations;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 

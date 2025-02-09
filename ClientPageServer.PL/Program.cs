@@ -1,26 +1,35 @@
 using ClientPageServer.PL;
+using ClientPageServer.PL.EF;
 using ClientPageServer.PL.Handlers;
+using ClientPageServer.PL.Interfaces;
+using ClientPageServer.PL.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+// server weapon items
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+builder.Services.AddDbContext<WeaponsItemsContext>(configure => configure.UseSqlServer(builder.Configuration.GetConnectionString("LocalSqlDb")));
+builder.Services.AddScoped<IWeaponsItemRepository, WeaponsItemRepository>();
+
 // Add service of HttpRequestMessage to the container.
-builder.Services.AddTransient<HttpRequestMessage>(serviceProvider =>
-{
-    // get connection string to out server
-    string? url = builder.Configuration["Azure:AdminServer"];
+//builder.Services.AddTransient<HttpRequestMessage>(serviceProvider =>
+//{
+//    // get connection string to out server
+//    string? url = builder.Configuration["Azure:AdminServer"];
 
-    if (string.IsNullOrEmpty(url)){
-        throw new ArgumentNullException(nameof(url));
-    }
+//    if (string.IsNullOrEmpty(url)){
+//        throw new ArgumentNullException(nameof(url));
+//    }
 
-    // initialize and return the instance of HttpRequestMessage
-    var httpRequestMsg = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
-    httpRequestMsg.Headers.Add("Accept", "application/json");
+//    // initialize and return the instance of HttpRequestMessage
+//    var httpRequestMsg = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+//    httpRequestMsg.Headers.Add("Accept", "application/json");
 
-    // inject instance in controller
-    return httpRequestMsg;
-});
+//    // inject instance in controller
+//    return httpRequestMsg;
+//});
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllers(options =>

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ClientPageServer.PL.Entities;
+using Newtonsoft.Json;
 
 
 namespace ClientPageServer.PL.DTO
@@ -36,5 +37,13 @@ namespace ClientPageServer.PL.DTO
         public string description { get; set; } = null!;
         public string image_path { get; set; } = null!;
 
+        public WeaponsCardDto() { }
+
+        public WeaponsCardDto(WeaponsProperty? weaponsProperty)
+        {
+            this.price = weaponsProperty!.price;
+            this.weight = weaponsProperty!.weight;
+            this.description = weaponsProperty!.description;
+        }
     }
 }
