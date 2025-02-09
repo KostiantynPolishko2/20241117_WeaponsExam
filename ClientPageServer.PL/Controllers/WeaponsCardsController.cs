@@ -49,6 +49,24 @@ namespace ClientPageServer.PL.Controllers
         //    }
         //}
 
+        [HttpGet("model/{model}", Name = "GetWeaponsCardDtoById")]
+        public ActionResult<WeaponsCardDto> GetWeaponsCardDtoById([FromRoute] string? model)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(model))
+                {
+                    throw new ArgumentNullException($"no name of weapons");
+                }
+
+                return Ok(weapons.getCardDtoById(model));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(getException(ex));
+            }
+        }
+
         [HttpGet("client-models", Name = "GetWeaponsCards")]
         public ActionResult<IEnumerable<WeaponsCardDto>> GetWeaponsCards()
         {
